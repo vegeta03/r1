@@ -1,7 +1,10 @@
-import streamlit as st
+import typer
 import groq
 import json
 import time
+from rich.console import Console
+from rich.panel import Panel
+from rich.markdown import Markdown
 from dotenv import load_dotenv
 import os
 
@@ -10,14 +13,19 @@ load_dotenv()
 
 # Get the API key from environment variables
 api_key = os.getenv("GROQ_API_KEY")
+model_id = os.getenv("GROQ_MODEL_ID")
 
+# Initialize Groq client with the API key
 client = groq.Groq(api_key=api_key)
+
+console = Console()
+app = typer.Typer()
 
 def make_api_call(messages, max_tokens, is_final_answer=False):
     for attempt in range(3):
         try:
             response = client.chat.completions.create(
-                model="llama-3.1-70b-versatile",
+                model=model_id,
                 messages=messages,
                 max_tokens=max_tokens,
                 temperature=0.2,
@@ -68,8 +76,8 @@ Example of a valid JSON response:
         
         step_count += 1
 
-        # Yield after each step for Streamlit to update
-        yield steps, None  # We're not yielding the total time until the end
+        # Yield after each step without Streamlit-specific formatting
+        yield step_data['title'], step_data['content'], thinking_time
 
     # Generate final answer
     messages.append({"role": "user", "content": "Please provide the final answer based on your reasoning above."})
@@ -82,43 +90,30 @@ Example of a valid JSON response:
     
     steps.append(("Final Answer", final_data['content'], thinking_time))
 
-    yield steps, total_thinking_time
+    yield "Final Answer", final_data['content'], thinking_time
 
-def main():
-    st.set_page_config(page_title="g1 prototype", page_icon="🧠", layout="wide")
-    
-    st.title("g1: Using Llama-3.1 70b on Groq to create o1-like reasoning chains")
-    
-    st.markdown("""
-    This is an early prototype of using prompting to create o1-like reasoning chains to improve output accuracy. It is not perfect and accuracy has yet to be formally evaluated. It is powered by Groq so that the reasoning step is fast!
-                
-    Open source [repository here](https://github.com/bklieger-groq)
-    """)
-    
-    # Text input for user query
-    user_query = st.text_input("Enter your query:", placeholder="e.g., How many 'R's are in the word strawberry?")
-    
-    if user_query:
-        st.write("Generating response...")
-        
-        # Create empty elements to hold the generated text and total time
-        response_container = st.empty()
-        time_container = st.empty()
-        
-        # Generate and display the response
-        for steps, total_thinking_time in generate_response(user_query):
-            with response_container.container():
-                for i, (title, content, thinking_time) in enumerate(steps):
-                    if title.startswith("Final Answer"):
-                        st.markdown(f"### {title}")
-                        st.markdown(content.replace('\n', '<br>'), unsafe_allow_html=True)
-                    else:
-                        with st.expander(title, expanded=True):
-                            st.markdown(content.replace('\n', '<br>'), unsafe_allow_html=True)
-            
-            # Only show total time when it's available at the end
-            if total_thinking_time is not None:
-                time_container.markdown(f"**Total thinking time: {total_thinking_time:.2f} seconds**")
+@app.command()
+def main(query: str = typer.Argument(..., help="Your query for the AI assistant")):
+    console.print(Panel("g1: Using " + model_id + " on Groq to create o1-like reasoning chains", expand=False))
+    console.print("Fork of Open source repository: https://github.com/bklieger-groq\n")
+    console.print("This is an early prototype of using prompting to create o1-like reasoning chains to improve output accuracy. It is not perfect and accuracy has yet to be formally evaluated. It is powered by Groq so that the reasoning step is fast!")
+
+    console.print(f"Query: {query}\n")
+    console.print("Generating response...\n")
+
+    total_thinking_time = 0
+    step_count = 1
+
+    for title, content, thinking_time in generate_response(query):
+        total_thinking_time += thinking_time
+
+        if title == "Final Answer":
+            console.print(Panel(Markdown(f"### {title}\n\n{content}"), expand=False))
+        else:
+            console.print(Panel(Markdown(f"## Step {step_count}: {title}\n\n{content}"), expand=False))
+            step_count += 1
+
+    console.print(f"\nTotal thinking time: {total_thinking_time:.2f} seconds")
 
 if __name__ == "__main__":
-    main()
+    app()
