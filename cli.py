@@ -93,12 +93,16 @@ Example of a valid JSON response:
     yield "Final Answer", final_data['content'], thinking_time
 
 @app.command()
-def main(query: str = typer.Argument(..., help="Your query for the AI assistant")):
+def main():
+    console = Console()
     console.print(Panel("g1: Using " + model_id + " on Groq to create o1-like reasoning chains", expand=False))
     console.print("Fork of Open source repository: https://github.com/bklieger-groq\n")
     console.print("This is an early prototype of using prompting to create o1-like reasoning chains to improve output accuracy. It is not perfect and accuracy has yet to be formally evaluated. It is powered by Groq so that the reasoning step is fast!")
 
-    console.print(f"Query: {query}\n")
+    # Prompt the user for input after the program starts
+    query = typer.prompt("\nEnter your query for the AI assistant")
+
+    console.print(f"\nQuery: {query}\n")
     console.print("Generating response...\n")
 
     total_thinking_time = 0

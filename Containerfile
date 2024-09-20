@@ -19,3 +19,6 @@ ENV GROQ_MODEL_ID=""
 
 # Run cli.py when the container launches
 CMD ["python", "cli.py"]
+
+# podman build -t g1-cli .
+# podman run -it --rm -e GROQ_API_KEY=your_api_key -e GROQ_MODEL_ID=llama-3.1-70b-versatile g1-cli
