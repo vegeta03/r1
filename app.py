@@ -96,7 +96,7 @@ def main():
     """)
     
     # Text input for user query
-    user_query = st.text_input("Enter your query:", placeholder="e.g., How many 'R's are in the word strawberry?")
+    user_query = st.text_area("Enter your query:", placeholder="e.g., How many 'R's are in the word strawberry?")
     
     if user_query:
         st.write("Generating response...")
