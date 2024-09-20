@@ -1,2 +1,5 @@
 streamlit
+typer
 groq
+rich
+python-dotenv

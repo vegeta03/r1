@@ -1,0 +1,40 @@
+# Version control
+.git
+.gitignore
+
+# Python virtual environments
+venv
+.venv
+g1-env
+
+# Environment variables
+.env
+
+# Python cache files
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+
+# IDE-specific files
+.vscode
+.idea
+
+# Streamlit-specific files
+app.py
+
+# Temporary files
+*.tmp
+*.log
+
+# Test files
+test_*
+*_test.py
+
+# Documentation
+README.md
+LICENSE
+
+# Other unnecessary files
+.DS_Store
+Thumbs.db

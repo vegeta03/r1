@@ -3,3 +3,4 @@ venv
 .venv
 g1-env
 app.py
+.cursorignore
