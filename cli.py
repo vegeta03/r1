@@ -1,22 +1,25 @@
+import os
 import typer
-import groq
 import json
 import time
 from rich.console import Console
 from rich.panel import Panel
 from rich.markdown import Markdown
 from dotenv import load_dotenv
-import os
+from openai import OpenAI
 
 # Load environment variables from .env file
 load_dotenv()
 
 # Get the API key from environment variables
-api_key = os.getenv("GROQ_API_KEY")
-model_id = os.getenv("GROQ_MODEL_ID")
+api_key = os.getenv("API_KEY")
+provider = os.getenv("PROVIDER", "groq") # "groq"
+base_url = os.getenv("BASE_URL", "https://api.groq.com/openai/v1") # "https://api.groq.com/openai/v1"
+model_id = os.getenv("MODEL_ID", "llama-3.1-70b-versatile") # "llama-3.1-70b-versatile"
+model_context_window = os.getenv("CONTEXT_WINDOW", 8000) # 8000 for llama-3.1-70b-versatile
 
-# Initialize Groq client with the API key
-client = groq.Groq(api_key=api_key)
+# Configure OpenAI client
+client = OpenAI(api_key=api_key, base_url=base_url)
 
 console = Console()
 app = typer.Typer()
@@ -42,7 +45,7 @@ def make_api_call(messages, max_tokens, is_final_answer=False):
 
 def generate_response(prompt):
     messages = [
-        {"role": "system", "content": """You are an expert AI assistant that explains your reasoning step by step. For each step, provide a title that describes what you're doing in that step, along with the content. Decide if you need another step or if you're ready to give the final answer. Respond in JSON format with 'title', 'content', and 'next_action' (either 'continue' or 'final_answer') keys. USE AS MANY REASONING STEPS AS NECESSARY TO ENSURE ACCURACY. AT LEAST 3. ALWAYS DOUBLE-CHECK YOUR RESULTS AND CONSIDER EDGE CASES. IF YOU FIND A DISCREPANCY IN YOUR REASONING, EXPLAIN IT AND CORRECT IT. BE AWARE OF YOUR LIMITATIONS AS AN LLM AND WHAT YOU CAN AND CANNOT DO. IN YOUR REASONING, INCLUDE EXPLORATION OF ALTERNATIVE ANSWERS. CONSIDER YOU MAY BE WRONG, AND IF YOU ARE WRONG IN YOUR REASONING, WHERE IT WOULD BE. FULLY TEST ALL OTHER POSSIBILITIES. YOU CAN BE WRONG. WHEN YOU SAY YOU ARE RE-EXAMINING, ACTUALLY RE-EXAMINE, AND USE ANOTHER APPROACH TO DO SO. DO NOT JUST SAY YOU ARE RE-EXAMINING. USE AT LEAST 3 METHODS TO DERIVE THE ANSWER. USE BEST PRACTICES.
+        {"role": "system", "content": """You are an expert AI assistant that explains your reasoning step by step. For each step, provide a title that describes what you're doing in that step, along with the content. Decide if you need another step or if you're ready to give the final answer. Respond in JSON format with 'title', 'content', and 'next_action' (either 'continue' or 'final_answer') keys. USE AS MANY REASONING STEPS AS NECESSARY TO ENSURE ACCURACY. ALWAYS DOUBLE-CHECK YOUR RESULTS AND CONSIDER EDGE CASES. IF YOU FIND A DISCREPANCY IN YOUR REASONING, EXPLAIN IT AND CORRECT IT. BE AWARE OF YOUR LIMITATIONS AS AN LLM AND WHAT YOU CAN AND CANNOT DO. IN YOUR REASONING, INCLUDE EXPLORATION OF ALTERNATIVE ANSWERS. CONSIDER YOU MAY BE WRONG, AND IF YOU ARE WRONG IN YOUR REASONING, WHERE IT WOULD BE. FULLY TEST ALL OTHER POSSIBILITIES. YOU CAN BE WRONG. WHEN YOU SAY YOU ARE RE-EXAMINING, ACTUALLY RE-EXAMINE, AND USE ANOTHER APPROACH TO DO SO. DO NOT JUST SAY YOU ARE RE-EXAMINING. USE AT LEAST 3 METHODS TO DERIVE THE ANSWER. USE BEST PRACTICES.
 
 Example of a valid JSON response:
 ```json

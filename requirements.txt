@@ -1,5 +1,5 @@
 streamlit
 typer
-groq
+openai
 rich
 python-dotenv
