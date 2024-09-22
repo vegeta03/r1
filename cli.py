@@ -45,18 +45,40 @@ def make_api_call(messages, max_tokens, is_final_answer=False):
 
 def generate_response(prompt):
     messages = [
-        {"role": "system", "content": """You are an expert AI assistant that explains your reasoning step by step. For each step, provide a title that describes what you're doing in that step, along with the content. Decide if you need another step or if you're ready to give the final answer. Respond in JSON format with 'title', 'content', and 'next_action' (either 'continue' or 'final_answer') keys. USE AS MANY REASONING STEPS AS NECESSARY TO ENSURE ACCURACY. ALWAYS DOUBLE-CHECK YOUR RESULTS AND CONSIDER EDGE CASES. IF YOU FIND A DISCREPANCY IN YOUR REASONING, EXPLAIN IT AND CORRECT IT. BE AWARE OF YOUR LIMITATIONS AS AN LLM AND WHAT YOU CAN AND CANNOT DO. IN YOUR REASONING, INCLUDE EXPLORATION OF ALTERNATIVE ANSWERS. CONSIDER YOU MAY BE WRONG, AND IF YOU ARE WRONG IN YOUR REASONING, WHERE IT WOULD BE. FULLY TEST ALL OTHER POSSIBILITIES. YOU CAN BE WRONG. WHEN YOU SAY YOU ARE RE-EXAMINING, ACTUALLY RE-EXAMINE, AND USE ANOTHER APPROACH TO DO SO. DO NOT JUST SAY YOU ARE RE-EXAMINING. USE AT LEAST 3 METHODS TO DERIVE THE ANSWER. USE BEST PRACTICES.
-
-Example of a valid JSON response:
-```json
-{
-    "title": "Identifying Key Information",
-    "content": "To begin solving this problem, we need to carefully examine the given information and identify the crucial elements that will guide our solution process. This involves...",
-    "next_action": "continue"
-}```
-"""},
-        {"role": "user", "content": prompt},
-        {"role": "assistant", "content": "Thank you! I will now think step by step following my instructions, starting at the beginning after decomposing the problem."}
+        {
+            "role": "system", 
+            "content": """You are an expert AI assistant that explains your reasoning step by step. 
+                For each step, provide a title that describes what you're doing in that step, along with the content. 
+                Decide if you need another step or if you're ready to give the final answer. 
+                Respond in JSON format with 'title', 'content', and 'next_action' (either 'continue' or 'final_answer') keys. 
+                USE AS MANY REASONING STEPS AS NECESSARY TO ENSURE ACCURACY. 
+                ALWAYS DOUBLE-CHECK YOUR RESULTS AND CONSIDER EDGE CASES. 
+                IF YOU FIND A DISCREPANCY IN YOUR REASONING, EXPLAIN IT AND CORRECT IT. 
+                BE AWARE OF YOUR LIMITATIONS AS AN LLM AND WHAT YOU CAN AND CANNOT DO. 
+                IN YOUR REASONING, INCLUDE EXPLORATION OF ALTERNATIVE ANSWERS. 
+                CONSIDER YOU MAY BE WRONG, AND IF YOU ARE WRONG IN YOUR REASONING, WHERE IT WOULD BE. 
+                FULLY TEST ALL OTHER POSSIBILITIES. YOU CAN BE WRONG. 
+                WHEN YOU SAY YOU ARE RE-EXAMINING, ACTUALLY RE-EXAMINE, AND USE ANOTHER APPROACH TO DO SO. 
+                DO NOT JUST SAY YOU ARE RE-EXAMINING. USE AT LEAST 3 METHODS TO DERIVE THE ANSWER. USE BEST PRACTICES.
+                IF YOU ARE UNSURE OF SOMETHING, SAY SO. DO NOT MAKE UP FACTS.
+                Example of a valid JSON response:
+                ```json
+                {
+                    "title": "Identifying Key Information",
+                    "content": "To begin solving this problem, we need to carefully examine the given information and identify the crucial elements that will guide our solution process. This involves...",
+                    "next_action": "continue"
+                }
+                ```
+            """
+        },
+        {
+            "role": "user", 
+            "content": prompt
+        },
+        {
+            "role": "assistant", 
+            "content": "Thank you! I will now think step by step following my instructions, starting at the beginning after decomposing the problem."
+        }
     ]
     
     steps = []
