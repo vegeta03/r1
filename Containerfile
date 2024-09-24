@@ -23,5 +23,6 @@ ENV CONTEXT_WINDOW=8000
 # Run cli.py when the container launches
 CMD ["python", "cli.py"]
 
-# podman build -t g1-cli .
-# podman run -it --rm -e PROVIDER=groq -e API_KEY=your_api_key -e BASE_URL=https://api.groq.com/openai/v1 -e MODEL_ID=llama-3.1-70b-versatile -e CONTEXT_WINDOW=8000 g1-cli
+# podman build -t r1-cli .
+# podman run -it --rm -e API_KEY=your_api_key r1-cli
+# podman run -it --rm -e PROVIDER=groq -e API_KEY=your_api_key -e BASE_URL=https://api.groq.com/openai/v1 -e MODEL_ID=llama-3.1-70b-versatile -e CONTEXT_WINDOW=8000 r1-cli
