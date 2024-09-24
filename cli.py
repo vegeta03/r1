@@ -241,9 +241,9 @@ def main():
     This function sets up the CLI interface, displays introductory information,
     prompts the user for a query, and processes the response.
     """
-    console.print(Panel(f"g1: Using {model_id} on Groq to create o1-like reasoning chains", expand=False))
-    console.print("Fork of Open source repository: https://github.com/bklieger-groq\n")
-    console.print("This is an early prototype of using prompting to create o1-like reasoning chains to improve output accuracy. It is not perfect and accuracy has yet to be formally evaluated. It is powered by Groq so that the reasoning step is fast!")
+    console.print(Panel(f"r1: Using {model_id} on Groq to create improved reasoning chains", expand=False))
+    console.print("Started as a fork of Open source repository g1: https://github.com/bklieger-groq\n")
+    console.print("This is an early prototype of using prompting to create better or o1-like reasoning chains to improve output accuracy. It is not perfect and accuracy has yet to be formally evaluated. It is powered by Groq so that the reasoning step is fast!")
 
     query = typer.prompt("\nEnter your query for the AI assistant")
     process_and_print_response(query)
